@@ -158,29 +158,29 @@ export default function Tetris() {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (gameOver) return;
 
-      if (event.key === "ArrowLeft") {
+      if (event.key === "ArrowLeft" && !paused) {
         const newPosition = { ...position, col: position.col - 1 };
         if (!checkCollision(newPosition.row, newPosition.col, currentTetromino.shape)) {
           setPosition(newPosition);
         }
       }
-      if (event.key === "ArrowRight") {
+      if (event.key === "ArrowRight" && !paused) {
         const newPosition = { ...position, col: position.col + 1 };
         if (!checkCollision(newPosition.row, newPosition.col, currentTetromino.shape)) {
           setPosition(newPosition);
         }
       }
-      if (event.key === "ArrowDown") {
+      if (event.key === "ArrowDown" && !paused) {
         const newPosition = { ...position, row: position.row + 1 };
         if (!checkCollision(newPosition.row, newPosition.col, currentTetromino.shape)) {
           setPosition(newPosition);
         }
       }
-      if (event.key === "ArrowUp") {
+      if (event.key === "ArrowUp" && !paused) {
         rotateTetromino();
       }
       if (event.key === " ") {
-        setPaused((prev) => !prev);
+        setPaused((prev) => !prev); // Toggle pause
       }
     };
 
@@ -190,7 +190,7 @@ export default function Tetris() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gray-800"
+      className="min-h-screen flex flex-col items-center justify-center bg-gray-800 relative"
     >
       {/* Tombol Back */}
       <a
@@ -202,6 +202,22 @@ export default function Tetris() {
 
       {gameOver ? (
         <h1 className="text-4xl font-bold text-red-500">Game Over</h1>
+      ) : paused ? (
+        <div className="absolute inset-0 bg-gray-900 bg-opacity-75 flex flex-col items-center justify-center">
+          <h1 className="text-4xl font-bold text-yellow-500 mb-4">Paused</h1>
+          <button
+            onClick={() => setPaused(false)}
+            className="px-6 py-2 bg-green-500 text-white rounded shadow hover:bg-green-600 transition"
+          >
+            Resume
+          </button>
+          <a
+            href="/"
+            className="mt-4 px-6 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 transition"
+          >
+            Back
+          </a>
+        </div>
       ) : (
         <div className="grid grid-rows-20 grid-cols-10 border-2 border-gray-500 relative">
           {grid.map((row, rowIndex) =>
@@ -229,7 +245,7 @@ export default function Tetris() {
                       : isShadow
                       ? "bg-blue-200"
                       : cell
-                      ? "bg-blue-500"
+                      ? "bg-blue-500 opacity-30"
                       : "bg-transparent"
                   }`}
                 ></div>
